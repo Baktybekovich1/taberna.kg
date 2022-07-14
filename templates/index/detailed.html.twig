@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <p>
+        <div class="text text-center">
+    <img src="/uploads/{{ product.img }}" style="height: 600px">
+
+
+        <h1>{{ product.name }}</h1>
+        <comment>{{ product.comment }}</comment><br>
+        <comment>Добавлено {{ product.date}}</comment>
+        <h3>Производитель:  {{ product.maker }}</h3>
+        <h4>Цена: {{ product.price }}сом</h4>
+
+        </div>
+    </p>
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

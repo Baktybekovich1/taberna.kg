@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+{% block title %} Главная {% endblock %}
+{% block body %}
+
+
+
+
+
+    <div class="container px-4 py-5" id="featured-3">
+        <h2 class="pb-2 border-bottom">Товары</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            {% for product in  pagination %}
+                <div class="feature col">
+
+                    <img src="/uploads/{{ product.img }}" style="width: 250px;height: 250px">
+
+                    <h2>{{ product.name }}</h2>
+                    <comment>{{ product.comment }}</comment>
+                    <h5>{{ product.maker }}</h5>
+                    <h6>{{ product.price }}сом</h6>
+                    <a href="{{ url('product_more', { id: product.id }) }}" class="icon-link">
+                        Подробнее..
+                    </a>
+                </div>
+{#-----------------------------------------------------------------------------------------------------------------------------------------------#}
+{#            <div class="feature col">#}
+{#                <div  style="width: 20rem;">#}
+{#                    <img src="/uploads/{{ product.img }}" class="card-img-top" >#}
+{#                    <div class="card-body">#}
+{#                        <h5 class="card-title">{{ product.name }}</h5>#}
+{#                        <p class="card-text">{{ product.comment }}</p>#}
+{#                        <a href="{{ url('product_more',{id: product.id}) }}" class="btn btn-primary">More</a>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+            {% endfor %}
+        </div>
+        <nav aria-label="Page navigation example">
+            {{ knp_pagination_render(pagination) }}
+{#            <ul class="pagination">#}
+{#                <li class="page-item"><a class="page-link" href="#">Previous</a></li>#}
+{#                <li class="page-item"><a class="page-link" href="#">1</a></li>#}
+{#                <li class="page-item"><a class="page-link" href="#">2</a></li>#}
+{#                <li class="page-item"><a class="page-link" href="#">3</a></li>#}
+{#                <li class="page-item"><a class="page-link" href="#">Next</a></li>#}
+{#            </ul>#}
+        </nav>
+    </div>
+
+{% endblock %}
