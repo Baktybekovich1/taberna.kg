@@ -42,10 +42,9 @@ class IndexController extends AbstractController
             6
         );
         $session = $this->requestStack->getSession();
-        if (null !== $session->get('cart')){
+        if (null !== $session->get('cart')) {
             $count = count($session->get('cart'));
-        }
-        else{
+        } else {
             $count = 0;
         }
 
@@ -80,8 +79,7 @@ class IndexController extends AbstractController
                 }
 
             }
-        }
-        else {
+        } else {
             return $this->redirect('/auto');
         }
         return $this->render('index/add.html.twig');
@@ -143,9 +141,19 @@ class IndexController extends AbstractController
     public function cart(ProductsRepository $productsRepository): Response
     {
         $session = $this->requestStack->getSession();
+        if (null !== $session->get('cart')) {
+            $count = count($session->get('cart'));
+        } else {
+            $count = 0;
+        }
+
         $ids = $session->get('cart');
         $products = $productsRepository->findBy(['id' => $ids]);
-        return $this->render('index/cart.html.twig',['products' => $products]);
+        $price = 0;
+        foreach ($products as $product) {
+            $price += $product->getPrice();
+        }
+        return $this->render('index/cart.html.twig', ['products' => $products, 'price' => $price, 'count' => $count]);
     }
 
     /**
