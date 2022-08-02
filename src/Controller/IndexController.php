@@ -125,5 +125,20 @@ class IndexController extends AbstractController
         }
         return $this->render('index/authorisation.html.twig');
     }
+    /**
+     * @Route("/cart",name="cart")
+     * @return Response
+     */
+    public function cart(): Response {
+        return $this->render('index/cart.html.twig');
+    }
+    /**
+     * @Route("/cart_add/{id}", name="cart_add")
+     * @return Response
+     */
+    public function cart_add(): Response {
+        $session = $this->requestStack->getSession();
+        return $this->redirect('/');
+    }
 
 }
