@@ -35,16 +35,21 @@ class IndexController extends AbstractController
         $query = $productsRepository->createQueryBuilder('p')
             ->getQuery();
 //-----------------------------------------------------------------
-        $session = $this->requestStack->getSession();
-        $session->set('status', 'visit');
 
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
             6
         );
+        $session = $this->requestStack->getSession();
+        if (null !== $session->get('cart')){
+            $count = count($session->get('cart'));
+        }
+        else{
+            $count = 0;
+        }
 
-        return $this->render('index/index.html.twig', ['pagination' => $pagination]);
+        return $this->render('index/index.html.twig', ['pagination' => $pagination, 'count' => $count]);
     }
 
 
@@ -55,28 +60,29 @@ class IndexController extends AbstractController
     public function products_add(Request $request, ProductsRepository $productsRepository): Response
     {
         $session = $this->requestStack->getSession();
-//        dd($session->get('status'));
-        if ($session->get('status') != 'admin') {
-            return $this->redirect('/auto');
-        }
-        if ($request->getMethod() == Request::METHOD_POST) {
-            /** @var UploadedFile $file */
-            $file = $request->files->get('file');
-//            dump($file->move('uploads',$file->getClientOriginalName()));
-            if ($file->getClientOriginalName() != null) {
-                $file->move('uploads', $file->getClientOriginalName());
-                $product = new Products();
-                $product->setName($request->request->get('name'));
-                $product->setDate(date('Y-m-d  H:i:s'));
-                $product->setMaker($request->request->get('maker'));
-                $product->setType($request->request->get('type'));
-                $product->setComment($request->request->get('text'));
-                $product->setPrice($request->request->get('price'));
-                $product->setImg($file->getClientOriginalName());
-                $productsRepository->add($product, true);
-                return $this->redirect('/');
-            }
+        $sssss = $session->get('status');
+        if (isset($sssss)) {
+            if ($request->getMethod() == Request::METHOD_POST) {
+                /** @var UploadedFile $file */
+                $file = $request->files->get('file');
+                if ($file->getClientOriginalName() != null) {
+                    $file->move('uploads', $file->getClientOriginalName());
+                    $product = new Products();
+                    $product->setName($request->request->get('name'));
+                    $product->setDate(date('Y-m-d  H:i:s'));
+                    $product->setMaker($request->request->get('maker'));
+                    $product->setType($request->request->get('type'));
+                    $product->setComment($request->request->get('text'));
+                    $product->setPrice($request->request->get('price'));
+                    $product->setImg($file->getClientOriginalName());
+                    $productsRepository->add($product, true);
+                    return $this->redirect('/');
+                }
 
+            }
+        }
+        else {
+            return $this->redirect('/auto');
         }
         return $this->render('index/add.html.twig');
     }
@@ -90,33 +96,37 @@ class IndexController extends AbstractController
         $product = $productsRepository->find($request->get('id'));
         return $this->render('index/detailed.html.twig', ['product' => $product]);
     }
+
     /**
      * @Route("/reg", name="registration")
      * @return Response
      */
-    public function registration( Request $request,AdminsRepository $adminsRepository): Response {
-        if ($request->getMethod()==Request::METHOD_POST) {
+    public function registration(Request $request, AdminsRepository $adminsRepository): Response
+    {
+        if ($request->getMethod() == Request::METHOD_POST) {
 
 //            dd($request->request->get('password'),$request->request->get('email'));
             $admin = new Admins();
             $admin->setEmail($request->request->get('email'));
             $admin->setPassword($request->request->get('password'));
-            $adminsRepository->add($admin,true);
+            $adminsRepository->add($admin, true);
         }
         return $this->render("index/registration.html.twig");
     }
+
     /**
      * @Route("/auto",name="authorisation")
      * @return Response
      */
-    public function authorisation(Request $request,AdminsRepository $adminsRepository): Response {
-        if ($request->getMethod()==Request::METHOD_POST) {
+    public function authorisation(Request $request, AdminsRepository $adminsRepository): Response
+    {
+        if ($request->getMethod() == Request::METHOD_POST) {
             $admins = $adminsRepository->findAll();
             foreach ($admins as $admin) {
 //                dd($admin->getEmail(),$admin->getPassword(),$request->request->get('email'),$request->request->get('password'));
                 if ($request->request->get('email') == $admin->getEmail() && $request->request->get('password') == $admin->getPassword()) {
                     $session = $this->requestStack->getSession();
-                    $session->set('status','admin');
+                    $session->set('status', 'admin');
 //                    dd($session->get('status'));
                     return $this->redirect('/add');
                 }
@@ -125,19 +135,33 @@ class IndexController extends AbstractController
         }
         return $this->render('index/authorisation.html.twig');
     }
+
     /**
      * @Route("/cart",name="cart")
      * @return Response
      */
-    public function cart(): Response {
-        return $this->render('index/cart.html.twig');
+    public function cart(ProductsRepository $productsRepository): Response
+    {
+        $session = $this->requestStack->getSession();
+        $ids = $session->get('cart');
+        $products = $productsRepository->findBy(['id' => $ids]);
+        return $this->render('index/cart.html.twig',['products' => $products]);
     }
+
     /**
      * @Route("/cart_add/{id}", name="cart_add")
      * @return Response
      */
-    public function cart_add(): Response {
+    public function cart_add(Request $request): Response
+    {
         $session = $this->requestStack->getSession();
+        $a = [];
+        $ss = $session->get('cart');
+        if (isset($ss)) {
+            $a = $ss;
+        }
+        $a[] = $request->get('id');
+        $session->set('cart', $a);
         return $this->redirect('/');
     }
 

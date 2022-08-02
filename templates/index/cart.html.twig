@@ -1,7 +1,38 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    Cart
+
+    <div class="container px-4 py-5" id="featured-3">
+        <h2 class="pb-2 border-bottom">Товары</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            {% for product in  products %}
+                <div class="feature col">
+
+                    <img src="/uploads/{{ product.img }}" style="width: 250px;height: 250px">
+
+                    <h2>{{ product.name }}</h2>
+                    <comment>{{ product.comment }}</comment>
+                    <h5>{{ product.maker }}</h5>
+                    <h6>{{ product.price }}сом</h6>
+                    <a href="{{ url('cart_add', {id: product.id}) }}">Add to cart</a> <br>
+                    <a href="{{ url('product_more', { id: product.id }) }}" class="icon-link">
+                        Подробнее..
+                    </a>
+                </div>
+                {#- --------------------------------------------------------------------------------------------------------------------------------------------- -#}
+                {#            <div class="feature col"> #}
+                {#                <div  style="width: 20rem;"> #}
+                {#                    <img src="/uploads/{{ product.img }}" class="card-img-top" > #}
+                {#                    <div class="card-body"> #}
+                {#                        <h5 class="card-title">{{ product.name }}</h5> #}
+                {#                        <p class="card-text">{{ product.comment }}</p> #}
+                {#                        <a href="{{ url('product_more',{id: product.id}) }}" class="btn btn-primary">More</a> #}
+                {#                    </div> #}
+                {#                </div> #}
+                {#            </div> #}
+            {% endfor %}
+
+
 {% endblock %}
 
 {% block title %}
