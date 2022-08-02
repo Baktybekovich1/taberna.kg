@@ -22,6 +22,7 @@ class IndexController extends AbstractController
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
+        //
 
     }
 
