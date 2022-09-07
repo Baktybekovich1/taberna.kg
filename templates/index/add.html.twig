@@ -2,12 +2,12 @@
 {% block title %} Add {% endblock %}
 {% block body %}
     <form method="post" enctype="multipart/form-data">
-        <input type="text" name="name" placeholder="Название">
-        <input type="text" name="price" placeholder="Цена(сом)">
-        <input type="text" name="type" placeholder="Тип">
-        <input name="maker" type="text" placeholder="Company">
-        <input type="file" name="file" >
-        <textarea name="text" placeholder="Описание"></textarea>
+        <input type="text" name="name" class="form-control" placeholder="Название"><br>
+        <input type="text" name="price" class="form-control" placeholder="Цена(сом)"><br>
+        <input type="text" name="type" class="form-control" placeholder="Тип"><br>
+        <input name="maker" type="text" class="form-control" placeholder="Company"><br>
+        <input type="file" name="file" ><br>
+        <textarea name="text" class="form-control" placeholder="Описание"></textarea><br>
         <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Сохранить">Сохранить</button>
     </form>
 {% endblock %}

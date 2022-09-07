@@ -4,11 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Products;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Products>
- *
  * @method Products|null find($id, $lockMode = null, $lockVersion = null)
  * @method Products|null findOneBy(array $criteria, array $orderBy = null)
  * @method Products[]    findAll()
@@ -20,6 +20,14 @@ class ProductsRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Products::class);
     }
+
+//    public function findWithSql(int $id): array
+//    {
+//        $conn = $this->_em->getConnection();
+//        $stmt = $conn->prepare('SELECT * FROM products where id = :id');
+//        $result = $stmt->executeQuery(['id' => $id]);
+//        return $result->fetchAllAssociative();
+//    }
 
     public function add(Products $entity, bool $flush = false): void
     {

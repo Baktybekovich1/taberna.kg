@@ -26,16 +26,13 @@ class IndexController extends AbstractController
 
     }
 
-    /**
-     * @Route("/", name="index_index")
-     * @return Response
-     */
+   #[Route("/", name: "index_index")]
     public function index(RequestStack $requestStack, ProductsRepository $productsRepository, EntityManagerInterface $em, PaginatorInterface $paginator, Request $request): Response
     {
+//        $product = $productsRepository->findWithSql(2);
+//        dd($productsRepository->find());
         $query = $productsRepository->createQueryBuilder('p')
             ->getQuery();
-//-----------------------------------------------------------------
-
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
@@ -52,10 +49,7 @@ class IndexController extends AbstractController
     }
 
 
-    /**
-     * @Route("/add", name="products_add")
-     * @return Response
-     */
+    #[Route("add", name: "products_add")]
     public function products_add(Request $request, ProductsRepository $productsRepository): Response
     {
         $session = $this->requestStack->getSession();
@@ -85,25 +79,18 @@ class IndexController extends AbstractController
         return $this->render('index/add.html.twig');
     }
 
-    /**
-     * @Route("/more/{id}",name="product_more")
-     * @return Response
-     */
+    #[Route("/more/{id}", name: "product_more")]
     public function product_more(ProductsRepository $productsRepository, Request $request): Response
     {
         $product = $productsRepository->find($request->get('id'));
         return $this->render('index/detailed.html.twig', ['product' => $product]);
     }
 
-    /**
-     * @Route("/reg", name="registration")
-     * @return Response
-     */
+    #[Route("/reg",name: "registration")]
     public function registration(Request $request, AdminsRepository $adminsRepository): Response
     {
         if ($request->getMethod() == Request::METHOD_POST) {
 
-//            dd($request->request->get('password'),$request->request->get('email'));
             $admin = new Admins();
             $admin->setEmail($request->request->get('email'));
             $admin->setPassword($request->request->get('password'));
@@ -112,20 +99,15 @@ class IndexController extends AbstractController
         return $this->render("index/registration.html.twig");
     }
 
-    /**
-     * @Route("/auto",name="authorisation")
-     * @return Response
-     */
+    #[Route("/auto",name: "authorisation")]
     public function authorisation(Request $request, AdminsRepository $adminsRepository): Response
     {
         if ($request->getMethod() == Request::METHOD_POST) {
             $admins = $adminsRepository->findAll();
             foreach ($admins as $admin) {
-//                dd($admin->getEmail(),$admin->getPassword(),$request->request->get('email'),$request->request->get('password'));
                 if ($request->request->get('email') == $admin->getEmail() && $request->request->get('password') == $admin->getPassword()) {
                     $session = $this->requestStack->getSession();
                     $session->set('status', 'admin');
-//                    dd($session->get('status'));
                     return $this->redirect('/add');
                 }
             }
@@ -134,10 +116,7 @@ class IndexController extends AbstractController
         return $this->render('index/authorisation.html.twig');
     }
 
-    /**
-     * @Route("/cart",name="cart")
-     * @return Response
-     */
+    #[Route("/cart",name: "cart")]
     public function cart(ProductsRepository $productsRepository): Response
     {
         $session = $this->requestStack->getSession();
@@ -156,10 +135,7 @@ class IndexController extends AbstractController
         return $this->render('index/cart.html.twig', ['products' => $products, 'price' => $price, 'count' => $count]);
     }
 
-    /**
-     * @Route("/cart_add/{id}", name="cart_add")
-     * @return Response
-     */
+    #[Route("cart_add/{id}",name: "cart_add")]
     public function cart_add(Request $request): Response
     {
         $session = $this->requestStack->getSession();
@@ -172,5 +148,4 @@ class IndexController extends AbstractController
         $session->set('cart', $a);
         return $this->redirect('/');
     }
-
 }
